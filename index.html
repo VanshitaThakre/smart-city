@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>AI Smart City Dashboard</title>
+</head>
+
+<body>
+    <div class="hero">
+        <h1>AI Autonomous Smart City</h1>
+        <form method="POST">
+            <select name="city" required>
+                <option value="">Select City</option>
+                <option value="nagpur">Nagpur</option>
+                <option value="pune">Pune</option>
+                <option value="mumbai">Mumbai</option>
+                <option value="delhi">Delhi</option>
+            </select>
+            <button type="submit">Analyze City</button>
+        </form>
+
+        {% if data %}
+        <div class="dashboard-container">
+            <h2>Analysis for: {{ city | capitalize }}</h2>
+            <div class="button-group">
+                <button
+                    onclick="updateChart('traffic', 'bar', [{{ data.traffic.split('%')[0] }}, 100])">Traffic</button>
+                <button onclick="updateChart('water', 'pie', [{{ data.water.split('%')[0] }}, 20])">Water</button>
+                <button
+                    onclick="updateChart('safety', 'doughnut', [{{ data.safety.split('%')[0] }}, 10])">Safety</button>
+            </div>
+
+            <div class="chart-box">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+        <script>
+            let myChart;
+            function updateChart(label, type, values) {
+                const ctx = document.getElementById('myChart').getContext('2d');
+                if (myChart) myChart.destroy();
+                myChart = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: [label.toUpperCase(), 'Remaining'],
+                        datasets: [{ data: values, backgroundColor: ['#38bdf8', '#1e293b'] }]
+                    }
+                });
+            }
+        </script>
+        {% endif %}
+    </div>
+</body>
+
+</html>
